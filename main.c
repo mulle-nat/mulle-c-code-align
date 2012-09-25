@@ -85,7 +85,7 @@ static void   grow_line( line *p)
    }
    else
    {
-      p->buf = realloc( NULL, nsize);
+      p->buf = realloc( p->buf, nsize);
    }
 
    p->curr     = &p->buf[ size];
