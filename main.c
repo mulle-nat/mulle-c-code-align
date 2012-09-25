@@ -42,10 +42,10 @@ typedef struct _line
    char   *curr;
    char   *sentinel;
 
-   // variety of const char const volatile const fucking const extern
    char   *white;
    int    white_len;
    
+   // variety of const char const volatile const fucking const extern
    char   *left;
    int    left_len;
    
@@ -101,15 +101,6 @@ static inline void   add_c_to_line( line *p, int c)
 }
    
 
-// what this does is
-// takes these lines
-//             1               2          3          4            5
-// < >* [static |auto ] < >* <type> < >+ [<*>+|] < >* [:ascii:]+<;>[:ascii]* <\n>
-//
-// and outputs
-//
-// < > < > < > \1 \2  < alignment> \3 \4 ; \5 ;
-//
 typedef struct
 {
    line   *line;
