@@ -1,0 +1,3 @@
+*.o
+variable-align
+assignment-align
