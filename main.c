@@ -14,6 +14,7 @@
 #include <string.h>
 
 #define TEST   0
+#define SORT   1
 
 
 int   iswhite( int c)
@@ -330,6 +331,9 @@ static int  mode( char *name)
       s = name;
    else
       s++;
+
+   if( ! strncmp( s, "mulle-", 6))
+     s += 6;
    
    return( *s == 'v');
 }
@@ -337,8 +341,8 @@ static int  mode( char *name)
 
 int main( int argc, const char * argv[])
 {
-   FILE   *fp;
    char   *op;
+   FILE   *fp;
    int    c;
    int    maxlen;
    line   *head;
@@ -348,13 +352,13 @@ int main( int argc, const char * argv[])
    
    if( mode( (char *)  argv[ 0]))
    {
-      op = "   ";
-      f  = parse_variable_line;
+      op   = "   ";
+      f    = parse_variable_line;
    }
    else
    {
-      op = " = ";
-      f  = parse_assignment_line;
+      op   = " = ";
+      f    = parse_assignment_line;
    }
    
    maxlen = 0;
