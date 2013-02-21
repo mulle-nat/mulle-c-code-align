@@ -11,3 +11,6 @@ mulle-variable-align:		main.c
 install:	all
 	install mulle-variable-align $(DST)
 	ln -f $(DST)/mulle-variable-align $(DST)/mulle-assignment-align
+
+clean:
+	- rm mulle-variable-align
