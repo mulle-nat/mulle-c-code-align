@@ -8,8 +8,11 @@ all:	mulle-variable-align
 mulle-variable-align:		main.c
 	cc -o mulle-variable-align main.c
 
+test:
+	true
+
 install:	all
-	install mulle-variable-align $(INSTALL_PATH)
+	install -d mulle-variable-align $(INSTALL_PATH)
 	ln -f $(INSTALL_PATH)/mulle-variable-align $(INSTALL_PATH)/mulle-assignment-align
 
 clean:
