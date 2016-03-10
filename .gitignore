@@ -1,3 +1,4 @@
 *.o
 variable-align
 assignment-align
+mulle-variable-align
