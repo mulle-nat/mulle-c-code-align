@@ -14,7 +14,8 @@ test:
 	true
 
 install:	all
-	install -d mulle-variable-align $(INSTALL_PATH)
+	mkdir -p $(INSTALL_PATH)
+	install mulle-variable-align $(INSTALL_PATH)
 	ln -f $(INSTALL_PATH)/mulle-variable-align $(INSTALL_PATH)/mulle-assignment-align
 
 clean:
