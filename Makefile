@@ -1,7 +1,9 @@
 #
 # old skool Makefile by Nat!
 #
+ifndef INSTALL_PATH
 INSTALL_PATH=/usr/local/bin
+endif
 
 all:	mulle-variable-align
 

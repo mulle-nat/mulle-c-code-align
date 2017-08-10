@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Mulle kybernetiK. All rights reserved.
 //
 //  http://github.com/mulle-nat/mulle-c-code-align
-//  http://www.mulle-kybernetik.com 
+//  http://www.mulle-kybernetik.com
 //  http://www.mulle-kybernetik.com/weblog
 //
 #include <stdio.h>
@@ -15,6 +15,8 @@
 
 #define TEST   0
 #define SORT   1
+
+#define VERSION   ((1 << 20) | (1 << 8) | 0)
 
 
 int   iswhite( int c)
@@ -45,11 +47,11 @@ typedef struct _line
 
    char   *white;
    int    white_len;
-   
+
    // variety of const char const volatile const fucking const extern
    char   *left;
    int    left_len;
-   
+
    char   *right;
 
    char   storage[ 120];
@@ -59,14 +61,14 @@ typedef struct _line
 static line   *alloc_line()
 {
    line  *p;
-   
+
    p = malloc( sizeof( line));
    memset( p, 0, sizeof( *p));
 
    p->buf      = p->storage;
    p->curr     = p->buf;
    p->sentinel = &p->buf[ sizeof( p->storage)];
-   
+
    return( p->buf ? p : NULL);
 }
 
@@ -75,10 +77,10 @@ static void   grow_line( line *p)
 {
    size_t   size;
    size_t   nsize;
-   
+
    size  = p->sentinel - p->buf;
    nsize = size * 2;
-   
+
    if( p->buf == p->storage)
    {
       p->buf = malloc( nsize);
@@ -100,7 +102,7 @@ static inline void   add_c_to_line( line *p, int c)
       grow_line( p);
    *p->curr++ = c;
 }
-   
+
 
 typedef struct
 {
@@ -139,15 +141,15 @@ static void   skip_white( parse_context *ctxt)
 static int   grab_white( parse_context *ctxt)
 {
    int   n;
-   
+
    ctxt->start = NULL;
-   
+
    n = 0;
    while( ctxt->s < ctxt->line->sentinel)
    {
       if( ! iswhite( *ctxt->s))
          break;
-      
+
       ++n;
       ++ctxt->s;
    }
@@ -158,17 +160,17 @@ static int   grab_white( parse_context *ctxt)
 static int   grab_identifier( parse_context *ctxt)
 {
    int   n;
-   
+
    skip_white( ctxt);
-   
+
    ctxt->start = ctxt->s;
    n           = 0;
- 
+
    while( ctxt->s < ctxt->line->sentinel)
    {
       if( ! isident( *ctxt->s))
          break;
-      
+
       ++n;
       ++ctxt->s;
    }
@@ -191,17 +193,17 @@ static int   is_member_of_charset( char *charset, int c)
 static int   grab_non_charset( parse_context *ctxt, char *charset)
 {
    int   n;
-   
+
    skip_white( ctxt);
-   
+
    ctxt->start = ctxt->s;
    n            = 0;
-   
+
    while( ctxt->s < ctxt->line->sentinel)
    {
       if( is_member_of_charset( charset, *ctxt->s))
          break;
-      
+
       ++n;
       ++ctxt->s;
    }
@@ -212,17 +214,17 @@ static int   grab_non_charset( parse_context *ctxt, char *charset)
 static int   grab_until_char( parse_context *ctxt, int c)
 {
    int   n;
-   
+
    skip_white( ctxt);
-   
+
    ctxt->start = ctxt->s;
    n           = 0;
-   
+
    while( ctxt->s < ctxt->line->sentinel)
    {
       if( *ctxt->s == c)
          return( n);
-      
+
       ++n;
       ++ctxt->s;
    }
@@ -242,14 +244,14 @@ static void   parse_variable_line( line *line)
 
    memset( last_identifier, 0, sizeof( last_identifier));
    memset( last_left_len, 0, sizeof( last_left_len));
-   
+
    ctxt.s    = line->buf;
    ctxt.line = line;
 
    // first grab off leading white and preserve
    line->white     = ctxt.s;
    line->white_len = grab_white( &ctxt);
-   
+
    line->left     = ctxt.s;
    line->left_len = grab_identifier( &ctxt);
 
@@ -263,7 +265,7 @@ static void   parse_variable_line( line *line)
 
       last_identifier[ 0] = ctxt.start;
       last_left_len[ 0]   = line->left_len;
-      
+
       len = grab_identifier( &ctxt);
       if( ! len)
          break;
@@ -277,7 +279,7 @@ static void   parse_variable_line( line *line)
          line->right    = ctxt.s;
          line->left_len = last_left_len[ 0];
          return;
-         
+
          // last identifier must have been the name
    default   :
          line->right    = last_identifier[ 0];
@@ -290,22 +292,22 @@ static void   parse_variable_line( line *line)
 static void   parse_assignment_line( line *line)
 {
    parse_context  ctxt;
-   
+
    ctxt.s    = line->buf;
    ctxt.line = line;
-   
+
    // first grab off leading white and preserve
    line->white     = ctxt.s;
    line->white_len = grab_white( &ctxt);
-   
+
    line->left     = ctxt.s;
    line->left_len = grab_until_char( &ctxt, '=');
-   
+
    if( ! line->left_len)
       return;
-   
+
    line->left_len = (int) (reverse_trim_white( &line->left[ line->left_len], line->left) - line->left);
-   
+
    // ignore ==
    if( *++ctxt.s == '=')
    {
@@ -314,7 +316,7 @@ static void   parse_assignment_line( line *line)
    }
 
    skip_white( &ctxt);
-   
+
    line->right = ctxt.s;
 }
 
@@ -322,10 +324,10 @@ static void   parse_assignment_line( line *line)
 static int  mode( char *name)
 {
    char  *s;
-   
+
    if( ! name)
       return( 0);
-   
+
    s = strrchr( name, '/');
    if( ! s)
       s = name;
@@ -334,7 +336,7 @@ static int  mode( char *name)
 
    if( ! strncmp( s, "mulle-", 6))
      s += 6;
-   
+
    return( *s == 'v');
 }
 
@@ -349,7 +351,7 @@ int main( int argc, const char * argv[])
    line   *p;
    line   *q;
    void   (*f)( line *p);
-   
+
    if( mode( (char *)  argv[ 0]))
    {
       op   = "   ";
@@ -360,9 +362,9 @@ int main( int argc, const char * argv[])
       op   = " = ";
       f    = parse_assignment_line;
    }
-   
+
    maxlen = 0;
-   
+
    p    = NULL;
    q    = p;
    head = NULL;
@@ -371,7 +373,7 @@ int main( int argc, const char * argv[])
 #if TEST
    fp = fopen( "/tmp/test.txt", "r");
 #endif
-   
+
    while( (c = getc( fp)) != EOF)
    {
       if( q == p)
@@ -382,28 +384,28 @@ int main( int argc, const char * argv[])
          else
             q->next = p;
       }
-      
+
       add_c_to_line( p, c);
-      
+
       if( c == '\n')
       {
          add_c_to_line( p, 0);
          q = p;
       }
    }
-   
+
    if( p)
       add_c_to_line( p, 0);
-   
+
    // got the lines now
    for( p = head; p; p = p->next)
    {
       (*f)( p);
-      
+
       if( p->left_len > maxlen)
          maxlen = p->left_len;
    }
- 
+
    for( p = head; p; p = p->next)
    {
       if( ! p->left_len)
@@ -411,10 +413,10 @@ int main( int argc, const char * argv[])
          printf( "%s", p->buf);
          continue;
       }
-      
+
       // keep indentation of first line
       printf( "%.*s", head->white_len, p->white);
-      
+
       printf( "%-*.*s", maxlen, p->left_len, p->left);
       printf( "%s", op);
       printf( "%s", p->right);
