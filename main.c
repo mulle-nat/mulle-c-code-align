@@ -16,7 +16,7 @@
 #define TEST   0
 #define SORT   1
 
-#define VERSION   ((1 << 20) | (1 << 8) | 2)
+#define VERSION   ((1 << 20) | (1 << 8) | 3)
 
 
 int   iswhite( int c)
