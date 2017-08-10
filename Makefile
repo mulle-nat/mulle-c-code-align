@@ -1,8 +1,8 @@
 #
 # old skool Makefile by Nat!
 #
-ifndef INSTALL_PATH
-INSTALL_PATH=/usr/local/bin
+ifndef INSTALL_PREFIX
+INSTALL_PREFIX=/usr/local
 endif
 
 all:	mulle-variable-align
@@ -14,9 +14,9 @@ test:
 	true
 
 install:	all
-	mkdir -p $(INSTALL_PATH)
-	install mulle-variable-align $(INSTALL_PATH)
-	ln -f $(INSTALL_PATH)/mulle-variable-align $(INSTALL_PATH)/mulle-assignment-align
+	mkdir -p $(INSTALL_PREFIX)/bin
+	install mulle-variable-align $(INSTALL_PREFIX)/bin
+	ln -f $(INSTALL_PREFIX)/bin/mulle-variable-align $(INSTALL_PREFIX)/bin/mulle-assignment-align
 
 clean:
 	- rm mulle-variable-align
