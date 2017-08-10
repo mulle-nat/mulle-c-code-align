@@ -48,7 +48,7 @@ generate_brew_formula_build()
 {
    cat <<EOF
 def install
-   system make install "INSTALL_PATH=#{prefix}"
+   system "make", "install", "INSTALL_PATH=#{prefix}"
 end
 EOF
 }
